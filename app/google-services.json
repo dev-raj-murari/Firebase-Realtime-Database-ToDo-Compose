@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "493593466138",
+    "firebase_url": "https://fir-todoassignment-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "fir-todoassignment",
+    "storage_bucket": "fir-todoassignment.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493593466138:android:78bc4e0e19fdbab6c108a3",
+        "android_client_info": {
+          "package_name": "com.example.n066_assignment2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBda30EVtiLjDTCzkFZmdixUcKHHvbdKT0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
