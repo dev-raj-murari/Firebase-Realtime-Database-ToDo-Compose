@@ -2,7 +2,6 @@ package com.example.n066_assignment2
 
 import com.example.n066_assignment2.data.Task
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Test
 
 class TaskTest {
@@ -13,7 +12,6 @@ class TaskTest {
         assertEquals("", task.id)
         assertEquals("", task.description)
         assertEquals("Medium", task.priority)
-        assertFalse(task.completed)
     }
 
     @Test
@@ -25,10 +23,10 @@ class TaskTest {
         )
 
         val sorted = tasks.sortedBy {
-            when (it.priority.lowercase()) {
-                "high" -> 0
-                "medium" -> 1
-                "low" -> 2
+            when (it.priority) {
+                "High" -> 0
+                "Medium" -> 1
+                "Low" -> 2
                 else -> 3
             }
         }

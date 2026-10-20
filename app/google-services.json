@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "493593466138",
-    "firebase_url": "https://fir-todoassignment-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "fir-todoassignment",
-    "storage_bucket": "fir-todoassignment.firebasestorage.app"
+    "project_number": "878011951716",
+    "firebase_url": "https://devraj-todo-default-rtdb.firebaseio.com",
+    "project_id": "devraj-todo",
+    "storage_bucket": "devraj-todo.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:493593466138:android:78bc4e0e19fdbab6c108a3",
+        "mobilesdk_app_id": "1:878011951716:android:b2a9e38d745c10fae0066d",
         "android_client_info": {
           "package_name": "com.example.n066_assignment2"
         }
@@ -16,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBda30EVtiLjDTCzkFZmdixUcKHHvbdKT0"
+          "current_key": "AIzaSyBC-A390v86bM8nWCojmzkaSW34wIeH2bs3"
         }
       ],
       "services": {

@@ -14,34 +14,8 @@ import kotlinx.coroutines.launch
 data class TodoUiState(
     val tasks: List<Task> = emptyList(),
     val isLoading: Boolean = true,
-    val error: String? = null,
-    val selectedFilter: String = "All",
-    val searchQuery: String = "",
-    val recentlyDeletedTask: Task? = null
-) {
-    /**
-     * Filtered tasks based on search query and selected priority filter.
-     */
-    val displayTasks: List<Task>
-        get() {
-            return tasks
-                .filter { task ->
-                    val matchesFilter = when (selectedFilter) {
-                        "High" -> task.priority.equals("High", ignoreCase = true)
-                        "Medium" -> task.priority.equals("Medium", ignoreCase = true)
-                        "Low" -> task.priority.equals("Low", ignoreCase = true)
-                        else -> true
-                    }
-                    val matchesSearch = searchQuery.isBlank() ||
-                            task.description.contains(searchQuery, ignoreCase = true)
-                    matchesFilter && matchesSearch
-                }
-        }
-
-    val highPriorityCount: Int get() = tasks.count { it.priority.equals("High", ignoreCase = true) }
-    val completedCount: Int get() = tasks.count { it.completed }
-    val totalCount: Int get() = tasks.size
-}
+    val error: String? = null
+)
 
 class TodoViewModel(
     private val repository: TaskRepository = TaskRepository()
@@ -51,37 +25,26 @@ class TodoViewModel(
     val uiState: StateFlow<TodoUiState> = _uiState.asStateFlow()
 
     init {
-        observeTasks()
-    }
-
-    private fun observeTasks() {
         viewModelScope.launch {
             repository.getTasks()
                 .catch { error ->
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            error = error.message ?: "Failed to load tasks from Firebase"
+                            error = error.message ?: "Failed to load tasks"
                         )
                     }
                 }
                 .collect { tasks ->
-                    // Dynamic sorting by Priority: High (0) -> Medium (1) -> Low (2)
-                    // Secondary sorting: incomplete before completed, then timestamp
-                    val sortedTasks = tasks.sortedWith(
-                        compareBy<Task> { task ->
-                            if (task.completed) 1 else 0
-                        }.thenBy { task ->
-                            when (task.priority.lowercase()) {
-                                "high" -> 0
-                                "medium" -> 1
-                                "low" -> 2
-                                else -> 3
-                            }
-                        }.thenByDescending { task ->
-                            task.timestamp
+                    // Priority management: sorted dynamically by priority (High -> Medium -> Low)
+                    val sortedTasks = tasks.sortedBy {
+                        when (it.priority) {
+                            "High" -> 0
+                            "Medium" -> 1
+                            "Low" -> 2
+                            else -> 3
                         }
-                    )
+                    }
 
                     _uiState.update {
                         it.copy(
@@ -133,52 +96,15 @@ class TodoViewModel(
     }
 
     fun deleteTask(taskId: String) {
-        val taskToDelete = _uiState.value.tasks.find { it.id == taskId }
-
         viewModelScope.launch {
             runCatching {
                 repository.deleteTask(taskId)
-                _uiState.update { it.copy(recentlyDeletedTask = taskToDelete) }
             }.onFailure { error ->
                 _uiState.update {
                     it.copy(error = error.message ?: "Failed to delete task")
                 }
             }
         }
-    }
-
-    fun undoDelete() {
-        val task = _uiState.value.recentlyDeletedTask ?: return
-        viewModelScope.launch {
-            runCatching {
-                repository.addTask(task.description, task.priority)
-                _uiState.update { it.copy(recentlyDeletedTask = null) }
-            }.onFailure { error ->
-                _uiState.update {
-                    it.copy(error = error.message ?: "Failed to restore task")
-                }
-            }
-        }
-    }
-
-    fun toggleTaskCompletion(task: Task) {
-        viewModelScope.launch {
-            runCatching {
-                repository.toggleTaskCompletion(task)
-            }.onFailure { error ->
-                _uiState.update {
-                    it.copy(error = error.message ?: "Failed to update task status")
-                }
-            }
-        }
-    }
-
-    fun setFilter(filter: String) {
-        _uiState.update { it.copy(selectedFilter = filter) }
-    }
-
-    fun setSearchQuery(query: String) {
-        _uiState.update { it.copy(searchQuery = query) }
     }
 
     fun clearError() {
