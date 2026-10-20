@@ -2,6 +2,7 @@ package com.example.n066_assignment2
 
 import com.example.n066_assignment2.data.Task
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Test
 
 class TaskTest {
@@ -12,6 +13,7 @@ class TaskTest {
         assertEquals("", task.id)
         assertEquals("", task.description)
         assertEquals("Medium", task.priority)
+        assertFalse(task.completed)
     }
 
     @Test

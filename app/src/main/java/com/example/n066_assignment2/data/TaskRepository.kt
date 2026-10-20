@@ -50,7 +50,8 @@ class TaskRepository {
         val task = Task(
             id = taskRef.key ?: "",
             description = description.trim(),
-            priority = priority
+            priority = priority,
+            completed = false
         )
         taskRef.setValue(task).await()
     }
@@ -61,5 +62,9 @@ class TaskRepository {
 
     suspend fun deleteTask(taskId: String) {
         tasksRef.child(taskId).removeValue().await()
+    }
+
+    suspend fun toggleTaskCompletion(task: Task) {
+        tasksRef.child(task.id).child("completed").setValue(!task.completed).await()
     }
 }

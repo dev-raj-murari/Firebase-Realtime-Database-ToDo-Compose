@@ -37,14 +37,17 @@ class TodoViewModel(
                 }
                 .collect { tasks ->
                     // Priority management: sorted dynamically by priority (High -> Medium -> Low)
-                    val sortedTasks = tasks.sortedBy {
-                        when (it.priority) {
-                            "High" -> 0
-                            "Medium" -> 1
-                            "Low" -> 2
-                            else -> 3
-                        }
-                    }
+                    val sortedTasks = tasks.sortedWith(
+                        compareBy<Task> { if (it.completed) 1 else 0 }
+                            .thenBy {
+                                when (it.priority) {
+                                    "High" -> 0
+                                    "Medium" -> 1
+                                    "Low" -> 2
+                                    else -> 3
+                                }
+                            }
+                    )
 
                     _uiState.update {
                         it.copy(
@@ -102,6 +105,18 @@ class TodoViewModel(
             }.onFailure { error ->
                 _uiState.update {
                     it.copy(error = error.message ?: "Failed to delete task")
+                }
+            }
+        }
+    }
+
+    fun toggleTaskCompletion(task: Task) {
+        viewModelScope.launch {
+            runCatching {
+                repository.toggleTaskCompletion(task)
+            }.onFailure { error ->
+                _uiState.update {
+                    it.copy(error = error.message ?: "Failed to update task status")
                 }
             }
         }
