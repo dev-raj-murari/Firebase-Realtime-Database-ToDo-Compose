@@ -1,5 +1,7 @@
 # Firebase Realtime Database To-Do App with Priority Management
 
+A reactive, priority-based To-Do application built with **Jetpack Compose**, **Material 3**, and **Firebase Realtime Database**.
+
 ---
 
 ## 📌 Objective & Scope
@@ -12,24 +14,19 @@ The objective of this assignment is to master the integration of **Firebase Real
 
 ---
 
-## Key Features
+## 🚀 Key Features
 
 - **⚡ Full Cloud CRUD Operations:**
   - **Create:** Instantly add new tasks with descriptions and priority flags via `DatabaseReference.push()`.
   - **Read:** Observe database changes in real-time using Kotlin Coroutines `callbackFlow` and `ValueEventListener`.
-  - **Update:** In-place editing dialog allowing users to revise task description, priority, or completion status.
-  - **Delete:** Interactive bidirectional swipe gestures (`SwipeToDismissBox`) with instantaneous cloud removal and undo capabilities.
+  - **Update:** In-place editing dialog allowing users to revise task description and priority levels.
+  - **Delete:** Interactive bidirectional swipe gestures (`SwipeToDismissBox`) with instantaneous cloud removal.
 - **🎯 Dynamic Priority Sorting & Visual Badges:**
   - Tasks are dynamically prioritized: **High** (🔴) $\rightarrow$ **Medium** (🟠) $\rightarrow$ **Low** (🟢).
   - High-priority tasks automatically rise to the top of the `LazyColumn`.
-  - Color-coded badges and task cards for enhanced visual hierarchy.
-- **🔍 Quick Search & Priority Filters:**
-  - Instant live filtering by priority chips (**All**, **High**, **Medium**, **Low**).
-  - Search query support with real-time text matching.
-- **📊 Real-time Dashboard Statistics:**
-  - Dynamic counters displaying Total Tasks, High Priority Tasks, and Completed Tasks.
+  - Color-coded badges for clean visual hierarchy.
 - **📶 Offline Persistence & Conflict Resilience:**
-  - Local caching via `FirebaseDatabase.getInstance().setPersistenceEnabled(true)`.
+  - Local caching via Firebase Realtime Database.
   - Tasks can be added, updated, and dismissed even while offline; changes queue locally and seamlessly sync upon network restoration.
 
 ---
@@ -46,13 +43,13 @@ The application adheres to official Google Android architecture guidelines utili
 +-------------------------------------------------------------+
                               ▲
                  UI State     │   User Events
-            (StateFlow<TodoUiState>) (Add/Edit/Delete/Filter)
+            (StateFlow<TodoUiState>) (Add/Edit/Delete)
                               │
 +-------------------------------------------------------------+
 |                     ViewModel Layer                         |
 |  - TodoViewModel.kt                                         |
-|    * Priority sorting algorithm (High > Medium > Low)       |
-|    * Filtering, search logic, error handling                |
+|    * Dynamic priority sorting algorithm (High > Medium > Low)|
+|    * Error handling via Snackbar                            |
 +-------------------------------------------------------------+
                               ▲
                  Flow<List<Task>> (callbackFlow)
@@ -68,7 +65,7 @@ The application adheres to official Google Android architecture guidelines utili
                               │
 +-------------------------------------------------------------+
 |                 Firebase Realtime Database                  |
-|  - Cloud JSON Tree (https://...firebasedatabase.app/tasks)  |
+|  - Cloud JSON Tree (https://devraj-todo-default-rtdb...)    |
 +-------------------------------------------------------------+
 ```
 
@@ -77,9 +74,7 @@ The application adheres to official Google Android architecture guidelines utili
 data class Task(
     val id: String = "",
     val description: String = "",
-    val priority: String = "Medium",
-    val completed: Boolean = false,
-    val timestamp: Long = 0L
+    val priority: String = "Medium"
 )
 ```
 
@@ -118,7 +113,6 @@ fun getTasks(): Flow<List<Task>> = callbackFlow {
 
 ---
 
-
 ## 🏃 Setup & Execution Guide
 
 1. **Clone the Repository:**
@@ -126,21 +120,19 @@ fun getTasks(): Flow<List<Task>> = callbackFlow {
    git clone https://github.com/dev-raj-murari/Firebase-Realtime-Database-ToDo-Compose.git
    ```
 2. **Open in Android Studio:**
-   - Launch Android Studio Ladybug / Meerkat or newer.
-   - Select **Open** and select the cloned project folder.
+   - Launch Android Studio.
+   - Select **Open** and choose the cloned folder.
 3. **Configure Firebase:**
-   - Place your `google-services.json` inside the `app/` folder (a valid template is already pre-configured for NMIMS MAD lab).
-   - Verify that your Firebase Realtime Database rules allow read and write access:
+   - Place your `google-services.json` inside the `app/` folder (pre-configured for `devraj-todo`).
+   - In your Firebase Realtime Database Rules:
      ```json
      {
        "rules": {
-         "tasks": {
-           ".read": true,
-           ".write": true
-         }
+         ".read": true,
+         ".write": true
        }
      }
      ```
 4. **Build & Run:**
-   - Connect an Android device or start an Android Virtual Device (AVD with API 26+).
+   - Select your device/emulator (e.g. `Pixel_8`).
    - Press **Run 'app'** (`Shift + F10`).
